@@ -123,6 +123,8 @@ const config: Config = {
         "heart-break": "heartBreak 0.5s ease-in-out forwards",
         "bounce-in": "bounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
         "pulse-ring": "pulseRing 2s ease-in-out infinite",
+        "node-ring":  "nodeRing 2s ease-out infinite",
+        "shimmer":    "shimmer 2s linear infinite",
       },
       keyframes: {
         floatUp: {
@@ -172,6 +174,14 @@ const config: Config = {
           "0%":   { transform: "scale(0.95)", boxShadow: "0 0 0 0 rgba(0, 41, 117, 0.7)" },
           "70%":  { transform: "scale(1)",    boxShadow: "0 0 0 12px rgba(0, 41, 117, 0)" },
           "100%": { transform: "scale(0.95)", boxShadow: "0 0 0 0 rgba(0, 41, 117, 0)" },
+        },
+        nodeRing: {
+          "0%":   { transform: "scale(1)",   opacity: "0.6" },
+          "100%": { transform: "scale(1.3)", opacity: "0" },
+        },
+        shimmer: {
+          "0%":   { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(400%)" },
         },
       },
       backgroundImage: {

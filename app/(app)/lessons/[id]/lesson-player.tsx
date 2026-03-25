@@ -437,7 +437,7 @@ export function LessonPlayer({ lesson, progress, userId }: Props) {
       </div>
 
       {/* Bottom action */}
-      <div className="sticky bottom-0 pb-safe px-4 py-3 bg-[var(--card-bg)] border-t border-[var(--border)]">
+      <div className="sticky bottom-16 md:bottom-0 pb-safe px-4 py-3 bg-[var(--card-bg)] border-t border-[var(--border)]">
         <div className="max-w-2xl mx-auto">
           {isCorrect === null ? (
             question.type === "fill_blank" && (

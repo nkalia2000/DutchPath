@@ -300,8 +300,8 @@ export function LessonPlayer({ lesson, progress, userId }: Props) {
 
           {/* Passage — warm parchment bg, primary left accent */}
           <div
-            className="rounded-2xl p-5 mb-6"
-            style={{ background: "#FFFBF5", borderLeft: "3px solid rgba(0, 41, 117, 0.30)" }}
+            className="rounded-2xl p-5 mb-6 bg-[#FFFBF5] dark:bg-[var(--card-bg)]"
+            style={{ borderLeft: "3px solid var(--passage-accent)" }}
           >
             <pre className="dutch-text whitespace-pre-wrap text-[var(--foreground)] text-sm leading-relaxed">
               {content.passage?.text}
@@ -407,8 +407,8 @@ export function LessonPlayer({ lesson, progress, userId }: Props) {
       <div className="sticky top-[57px] z-10 bg-[var(--background)] border-b border-[var(--border)] px-4 pt-3 pb-2">
         <div className="max-w-2xl mx-auto">
           <div
-            className="max-h-[28vh] overflow-y-auto rounded-xl p-3"
-            style={{ background: "#FFFBF5", borderLeft: "3px solid rgba(0, 41, 117, 0.30)" }}
+            className="max-h-[28vh] overflow-y-auto rounded-xl p-3 bg-[#FFFBF5] dark:bg-[var(--card-bg)]"
+            style={{ borderLeft: "3px solid var(--passage-accent)" }}
           >
             {/* Source label with type dot */}
             <div className="flex items-center gap-1.5 mb-1.5">
@@ -538,7 +538,7 @@ function QuestionRenderer({
                     isRight ? "bg-success"
                     : isWrong ? "bg-danger"
                     : isSelected ? "bg-primary"
-                    : "bg-gray-300"
+                    : "bg-gray-300 dark:bg-gray-600"
                   )}
                   aria-hidden="true"
                 />

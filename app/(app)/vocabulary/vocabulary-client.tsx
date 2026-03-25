@@ -41,10 +41,10 @@ const CATEGORY_BORDER_COLORS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  new: "bg-gray-100 text-gray-500",
-  learning: "bg-blue-100 text-blue-600",
-  reviewing: "bg-amber-100 text-amber-600",
-  mastered: "bg-green-100 text-green-600",
+  new:       "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400",
+  learning:  "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400",
+  reviewing: "bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400",
+  mastered:  "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400",
 };
 
 export function VocabularyClient({ cards, userId }: Props) {
@@ -245,7 +245,7 @@ export function VocabularyClient({ cards, userId }: Props) {
               {card.example_sentence_nl && (
                 <>
                   <div className="w-full h-px bg-[var(--border)] my-3" aria-hidden="true" />
-                  <div className="w-full rounded-xl px-3 py-2 text-left" style={{ background: "#FFFBF5" }}>
+                  <div className="w-full rounded-xl px-3 py-2 text-left bg-[#FFFBF5] dark:bg-[var(--card-bg)]">
                     <p className="dutch-text text-sm text-[var(--muted)] italic">{card.example_sentence_nl}</p>
                     {card.example_sentence_en && (
                       <p className="text-xs text-[var(--muted)] mt-1">{card.example_sentence_en}</p>

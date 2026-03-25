@@ -39,6 +39,9 @@
   --tertiary-fixed: #ffddb8;
   --on-tertiary-container: #f8a110;
 
+  /* passage accent — tinted left border on reading cards */
+  --passage-accent: rgba(0, 41, 117, 0.25);
+
   /* text & outlines */
   --on-surface: #1a1c1b;
   --on-surface-variant: #434653;
@@ -57,6 +60,7 @@
   --card-bg: #1e2130;
   --border: #2e3142;
   --muted: #9ca3af;
+  --passage-accent: rgba(77, 121, 209, 0.45);
 }
 
 * {

@@ -99,7 +99,7 @@ export function ProfileClient({ profile, activity, achievements, userId, avgScor
         {/* Avatar with conic-gradient ring */}
         <div
           className="relative shrink-0 rounded-full p-[3px]"
-          style={{ background: "conic-gradient(from 0deg, #003DA5, #FF6B00, #003DA5)" }}
+          style={{ background: "conic-gradient(from 0deg, var(--primary), var(--accent), var(--primary))" }}
           aria-label={`Avatar for ${profile.username}`}
         >
           <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-white font-bold text-2xl overflow-hidden">
@@ -152,12 +152,10 @@ export function ProfileClient({ profile, activity, achievements, userId, avgScor
               key={level}
               className={cn(
                 "rounded-xl p-4 border relative overflow-hidden",
-                available ? "shadow-card" : "border-[var(--border)] bg-[var(--card-bg)]"
+                available
+                  ? "shadow-card border-primary/30 bg-primary/[0.06] dark:bg-primary/[0.12]"
+                  : "border-[var(--border)] bg-[var(--card-bg)]"
               )}
-              style={available ? {
-                borderColor: "rgba(0, 61, 165, 0.3)",
-                background: "linear-gradient(135deg, rgba(0, 61, 165, 0.07) 0%, rgba(0, 61, 165, 0.03) 100%)",
-              } : {}}
             >
               <span className={cn("text-xs font-bold text-white px-2 py-0.5 rounded-full", color)}>
                 {level}
@@ -210,10 +208,7 @@ export function ProfileClient({ profile, activity, achievements, userId, avgScor
             />
           </div>
           {daysUntilExam !== null && daysUntilExam > 0 && (
-            <div
-              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-primary"
-              style={{ background: "rgba(0, 61, 165, 0.08)" }}
-            >
+            <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-primary dark:text-blue-400 bg-primary/10 dark:bg-blue-900/30">
               <span aria-hidden="true">📅</span>
               {daysUntilExam} days to exam
             </div>

@@ -22,7 +22,14 @@
       "Bash(ls -la '/Users/roahanroy/DutchPath/app/\\(app\\)/lessons/')",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(npx next:*)",
+      "Bash(ls -la \"/Users/roahanroy/dutchpath/app/\\(app\\)/\")",
+      "Bash(find \"/Users/roahanroy/dutchpath/app/\\(app\\)\" -type f \\\\\\( -name \"page.tsx\" -o -name \"*-client.tsx\" -o -name \"layout.tsx\" \\\\\\))",
+      "Bash(find /Users/roahanroy/Downloads/Stitch -type f \\\\\\(-name *.pdf -o -name *.fig -o -name *.xd \\\\\\))",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)",
+      "Bash(git merge:*)"
     ]
   }
 }

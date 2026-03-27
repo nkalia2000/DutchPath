@@ -29,7 +29,13 @@
       "Bash(find /Users/roahanroy/Downloads/Stitch -type f \\\\\\(-name *.pdf -o -name *.fig -o -name *.xd \\\\\\))",
       "Bash(git checkout:*)",
       "Bash(git pull:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git stash:*)",
+      "Bash(grep -r \"framer-motion\\\\|lucide-react\\\\|motion\" /Users/roahanroy/DutchPath/app --include=*.ts --include=*.tsx -l)",
+      "Bash(grep -r \"export function\\\\|export const\" /Users/roahanroy/DutchPath/lib --include=*.ts --include=*.tsx)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm audit:*)"
     ]
   }
 }

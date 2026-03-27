@@ -154,11 +154,12 @@ export function LessonMapClient({ lessons }: Props) {
                         onClick={() => !isLockedLesson && setSelectedLesson(lesson)}
                       >
                         <div style={{
-                          display: "flex", alignItems: "center", gap: 24, justifyContent: "center",
+                          position: "relative", width: "100%", minHeight: 56,
+                          display: "flex", alignItems: "center",
                           opacity: isLockedLesson ? 0.4 : 1,
                         }}>
-                          {/* Left label */}
-                          <div style={{ flex: 1, textAlign: "right" }}>
+                          {/* Left label — right-aligned, stops before circle */}
+                          <div style={{ width: "calc(50% - 40px)", textAlign: "right", paddingRight: 12 }}>
                             <span style={{ fontWeight: 700, color: isCompleted ? c.primary : c.onSurface, fontSize: 14 }}>
                               {lesson.title}
                             </span>
@@ -180,11 +181,12 @@ export function LessonMapClient({ lessons }: Props) {
                             )}
                           </div>
 
-                          {/* Node circle */}
+                          {/* Node circle — absolutely centered */}
                           <div style={{
-                            width: 56, height: 56, borderRadius: 9999, flexShrink: 0,
+                            position: "absolute", left: "50%", transform: "translateX(-50%)",
+                            width: 56, height: 56, borderRadius: 9999,
                             display: "flex", alignItems: "center", justifyContent: "center",
-                            position: "relative", zIndex: 20,
+                            zIndex: 20,
                             ...(isCompleted
                               ? { background: c.primary, color: "#ffffff", boxShadow: "0 4px 6px -1px rgba(0,0,0,.1)" }
                               : {}),
@@ -215,8 +217,8 @@ export function LessonMapClient({ lessons }: Props) {
                             )}
                           </div>
 
-                          {/* Right label */}
-                          <div style={{ flex: 1 }}>
+                          {/* Right label — left-aligned, starts after circle */}
+                          <div style={{ width: "calc(50% - 40px)", marginLeft: "auto", paddingLeft: 12 }}>
                             <span style={{
                               padding: "2px 8px", borderRadius: 9999, fontSize: 10, fontWeight: 700,
                               background: `${typeColor}1a`, color: typeColor,

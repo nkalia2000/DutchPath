@@ -93,7 +93,13 @@ export function ReadingClient({ lessons }: Props) {
     const questions = content?.questions ?? [];
     const words = passage.split(/(\s+)/);
 
-    const totalCorrect = questions.filter((q: any, i: number) => selectedAnswers[i] === q.correct_index).length;
+    /** Derive the correct option index for any question type */
+    const getCorrectIdx = (q: any): number => {
+      if (q.type === "true_false") return q.correct_answer === true || q.correct_answer === "true" ? 0 : 1;
+      return q.correct_index ?? 0;
+    };
+
+    const totalCorrect = questions.filter((q: any, i: number) => selectedAnswers[i] === getCorrectIdx(q)).length;
 
     return (
       <div style={{ background: c.background, color: c.onSurface, fontFamily: font.headline, minHeight: "100vh" }}>
@@ -242,7 +248,8 @@ export function ReadingClient({ lessons }: Props) {
 
           {questions.map((q: any, qi: number) => {
             const answered = selectedAnswers[qi] !== undefined;
-            const isCorrect = answered && selectedAnswers[qi] === q.correct_index;
+            const correctIdx = getCorrectIdx(q);
+            const isCorrect = answered && selectedAnswers[qi] === correctIdx;
             const opts: string[] = q.options ?? [];
             const isTrueFalse = q.type === "true_false";
             const displayOpts = isTrueFalse ? ["True", "False"] : opts;
@@ -262,8 +269,8 @@ export function ReadingClient({ lessons }: Props) {
                 <div style={{ display: isTrueFalse ? "flex" : "flex", flexDirection: isTrueFalse ? "row" : "column", gap: 10 }}>
                   {displayOpts.map((opt: string, oi: number) => {
                     const isSelected = selectedAnswers[qi] === oi;
-                    const isCorrectOpt = showResults && oi === q.correct_index;
-                    const isWrong = showResults && isSelected && oi !== q.correct_index;
+                    const isCorrectOpt = showResults && oi === correctIdx;
+                    const isWrong = showResults && isSelected && oi !== correctIdx;
                     return (
                       <button
                         key={oi}

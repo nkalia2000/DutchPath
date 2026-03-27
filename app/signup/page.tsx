@@ -4,11 +4,18 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useTheme, getColors } from "@/lib/use-theme";
+
+const font = {
+  headline: "'Plus Jakarta Sans', sans-serif",
+  body: "'Noto Serif', serif",
+};
 
 export default function SignupPage() {
   const router = useRouter();
+  const { isDark } = useTheme();
+  const c = getColors(isDark);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -49,18 +56,37 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background)] px-4">
+      <div style={{
+        minHeight: "100vh", display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        background: c.background, padding: "16px 24px",
+        fontFamily: font.headline, transition: "background 0.3s",
+      }}>
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-center max-w-sm"
+          style={{
+            textAlign: "center", maxWidth: 400, padding: 40,
+            background: c.surfaceLowest, borderRadius: 28,
+            boxShadow: "0px 12px 48px rgba(26,28,27,0.08)",
+          }}
         >
-          <CheckCircle2 size={64} className="text-success mx-auto mb-4" aria-hidden="true" />
-          <h2 className="text-2xl font-bold mb-2">Check your email!</h2>
-          <p className="text-[var(--muted)]">
-            We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
+          <div style={{
+            width: 80, height: 80, borderRadius: 9999, margin: "0 auto 24px",
+            background: `${c.primary}15`, display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <span className="mso mso-fill" style={{ fontSize: 40, color: c.primary }}>check_circle</span>
+          </div>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: c.onSurface, marginBottom: 12 }}>Check your email!</h2>
+          <p style={{ color: c.onSurfaceVariant, fontSize: 14, lineHeight: 1.6 }}>
+            We sent a confirmation link to <strong style={{ color: c.onSurface }}>{email}</strong>. Click it to activate your account.
           </p>
-          <Link href="/login" className="mt-6 inline-block text-primary dark:text-blue-400 font-medium hover:underline">
+          <Link href="/login" style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            marginTop: 28, color: c.primary, fontWeight: 700,
+            fontSize: 14, textDecoration: "none",
+          }}>
+            <span className="mso" style={{ fontSize: 18 }}>arrow_back</span>
             Back to login
           </Link>
         </motion.div>
@@ -69,29 +95,58 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background)] px-4">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-center">
-        <div className="text-5xl mb-3" aria-hidden="true">🇳🇱</div>
-        <h1 className="text-3xl font-bold text-primary dark:text-blue-400">DutchPath</h1>
-        <p className="text-[var(--muted)] mt-1 text-sm">Start your Inburgering journey today</p>
+    <div style={{
+      minHeight: "100vh", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      background: c.background, padding: "16px 24px",
+      fontFamily: font.headline, transition: "background 0.3s",
+    }}>
+      {/* Logo */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        style={{ marginBottom: 40, textAlign: "center" }}
+      >
+        <div style={{ fontSize: 56, marginBottom: 8 }} aria-hidden="true">🇳🇱</div>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: c.primary, letterSpacing: "-0.025em", margin: 0 }}>
+          DutchPath
+        </h1>
+        <p style={{ color: c.onSurfaceVariant, marginTop: 6, fontSize: 14, fontWeight: 500 }}>
+          Start your Inburgering journey today
+        </p>
       </motion.div>
 
+      {/* Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="w-full max-w-sm bg-[var(--card-bg)] rounded-2xl shadow-lg border border-[var(--border)] p-6"
+        style={{
+          width: "100%", maxWidth: 400, background: c.surfaceLowest,
+          borderRadius: 28, padding: 32,
+          boxShadow: "0px 12px 48px rgba(26,28,27,0.08)",
+        }}
       >
-        <h2 className="text-xl font-semibold mb-5">Create your account</h2>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: c.onSurface, marginBottom: 28, letterSpacing: "-0.025em" }}>
+          Create your account
+        </h2>
 
+        {/* Google OAuth */}
         <button
           onClick={handleGoogle}
           disabled={googleLoading}
-          className="w-full flex items-center justify-center gap-3 border border-[var(--border)] rounded-xl py-3 px-4 font-medium text-sm hover:bg-[var(--border)]/30 transition-colors tap-target mb-4 disabled:opacity-60"
+          style={{
+            width: "100%", display: "flex", alignItems: "center", justifyContent: "center",
+            gap: 12, padding: "14px 16px", borderRadius: 16,
+            border: `1.5px solid ${c.outlineVariant}`, background: "transparent",
+            cursor: "pointer", fontSize: 14, fontWeight: 600,
+            fontFamily: font.headline, color: c.onSurface,
+            opacity: googleLoading ? 0.6 : 1, transition: "all 0.2s",
+          }}
           aria-label="Sign up with Google"
         >
           {googleLoading ? (
-            <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+            <span className="mso" style={{ fontSize: 18, color: c.onSurfaceVariant, animation: "spin 1s linear infinite" }}>progress_activity</span>
           ) : (
             <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -103,46 +158,82 @@ export default function SignupPage() {
           Continue with Google
         </button>
 
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-[var(--border)]" />
-          </div>
-          <div className="relative flex justify-center">
-            <span className="bg-[var(--card-bg)] px-3 text-xs text-[var(--muted)]">or</span>
-          </div>
+        {/* Divider */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16, margin: "24px 0" }}>
+          <div style={{ flex: 1, height: 1, background: c.outlineVariant }} />
+          <span style={{ fontSize: 12, fontWeight: 600, color: c.outline, textTransform: "uppercase", letterSpacing: "0.1em" }}>or</span>
+          <div style={{ flex: 1, height: 1, background: c.outlineVariant }} />
         </div>
 
-        <form onSubmit={handleSignup} className="space-y-4">
+        {/* Email/password form */}
+        <form onSubmit={handleSignup} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1.5">Email address</label>
-            <input
-              id="email" type="email" value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required autoComplete="email"
-              className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
-              placeholder="you@example.com"
-            />
+            <label htmlFor="email" style={{ display: "block", fontSize: 12, fontWeight: 700, marginBottom: 8, color: c.onSurfaceVariant, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              Email address
+            </label>
+            <div style={{ position: "relative" }}>
+              <span className="mso" style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 18, color: c.outline }}>mail</span>
+              <input
+                id="email" type="email" value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required autoComplete="email"
+                placeholder="you@example.com"
+                style={{
+                  width: "100%", padding: "14px 14px 14px 44px", borderRadius: 14,
+                  border: `1.5px solid ${c.outlineVariant}`, background: c.surfaceLow,
+                  fontSize: 14, fontFamily: font.headline, color: c.onSurface,
+                  outline: "none", transition: "border-color 0.2s",
+                }}
+              />
+            </div>
           </div>
+
           <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-1.5">Password</label>
-            <div className="relative">
+            <label htmlFor="password" style={{ display: "block", fontSize: 12, fontWeight: 700, marginBottom: 8, color: c.onSurfaceVariant, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              Password
+            </label>
+            <div style={{ position: "relative" }}>
+              <span className="mso" style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 18, color: c.outline }}>lock</span>
               <input
                 id="password" type={showPassword ? "text" : "password"} value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required autoComplete="new-password"
-                className="w-full px-3 py-2.5 pr-10 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
                 placeholder="min. 8 characters"
+                style={{
+                  width: "100%", padding: "14px 48px 14px 44px", borderRadius: 14,
+                  border: `1.5px solid ${c.outlineVariant}`, background: c.surfaceLow,
+                  fontSize: 14, fontFamily: font.headline, color: c.onSurface,
+                  outline: "none", transition: "border-color 0.2s",
+                }}
               />
-              <button type="button" onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--foreground)] tap-target flex items-center justify-center"
-                aria-label={showPassword ? "Hide password" : "Show password"}>
-                {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
+              <button
+                type="button" onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)",
+                  width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
+                  background: "transparent", border: "none", cursor: "pointer",
+                }}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <span className="mso" style={{ fontSize: 18, color: c.outline }}>
+                  {showPassword ? "visibility_off" : "visibility"}
+                </span>
               </button>
             </div>
+            {/* Password strength */}
             {password.length > 0 && (
-              <div className="mt-1.5 flex items-center gap-1.5">
-                <div className={`h-1 flex-1 rounded-full ${passwordStrong ? "bg-success" : "bg-danger"}`} aria-hidden="true" />
-                <span className={`text-xs ${passwordStrong ? "text-success" : "text-danger"}`}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
+                <div style={{
+                  flex: 1, height: 4, borderRadius: 9999, overflow: "hidden",
+                  background: c.surfaceHighest,
+                }}>
+                  <div style={{
+                    height: "100%", borderRadius: 9999, transition: "width 0.3s, background 0.3s",
+                    width: passwordStrong ? "100%" : `${Math.min(password.length / 8 * 100, 80)}%`,
+                    background: passwordStrong ? "#16a34a" : c.error,
+                  }} />
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: passwordStrong ? "#16a34a" : c.error }}>
                   {passwordStrong ? "Strong" : "Too short"}
                 </span>
               </div>
@@ -150,22 +241,48 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} role="alert"
-              className="text-danger text-sm bg-danger/10 rounded-lg px-3 py-2">{error}</motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              role="alert"
+              style={{
+                display: "flex", alignItems: "center", gap: 8,
+                padding: "12px 16px", borderRadius: 12,
+                background: `${c.error}15`, color: c.error,
+                fontSize: 13, fontWeight: 600,
+              }}
+            >
+              <span className="mso" style={{ fontSize: 18 }}>error</span>
+              {error}
+            </motion.div>
           )}
 
-          <button type="submit" disabled={loading}
-            className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-xl transition-colors tap-target disabled:opacity-60 flex items-center justify-center gap-2">
-            {loading && <Loader2 size={18} className="animate-spin" aria-hidden="true" />}
+          <button
+            type="submit" disabled={loading}
+            style={{
+              width: "100%", padding: 16, borderRadius: 9999, border: "none",
+              cursor: "pointer", fontSize: 15, fontWeight: 700,
+              fontFamily: font.headline, color: "#fff",
+              background: `linear-gradient(to bottom, ${c.primary}, ${c.primaryContainer})`,
+              boxShadow: `0 10px 20px -5px ${c.primary}40`,
+              opacity: loading ? 0.6 : 1, transition: "all 0.2s",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            }}
+          >
+            {loading && <span className="mso" style={{ fontSize: 18, animation: "spin 1s linear infinite" }}>progress_activity</span>}
             Create account
           </button>
         </form>
 
-        <p className="text-center text-sm text-[var(--muted)] mt-4">
+        <p style={{ textAlign: "center", fontSize: 14, color: c.onSurfaceVariant, marginTop: 24, fontWeight: 500 }}>
           Already have an account?{" "}
-          <Link href="/login" className="text-primary dark:text-blue-400 font-medium hover:underline">Sign in</Link>
+          <Link href="/login" style={{ color: c.primary, fontWeight: 700, textDecoration: "none" }}>
+            Sign in
+          </Link>
         </p>
       </motion.div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

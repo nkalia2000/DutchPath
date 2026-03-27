@@ -3,14 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Clock, User, ChevronRight, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAppStore } from "@/lib/store";
+import { useTheme, getColors } from "@/lib/use-theme";
+
+const font = {
+  headline: "'Plus Jakarta Sans', sans-serif",
+  body: "'Noto Serif', serif",
+};
 
 const STEPS = [
-  { id: 1, title: "What's your name?", subtitle: "Pick a username for your profile" },
-  { id: 2, title: "When is your exam?", subtitle: "We'll count down the days for you" },
-  { id: 3, title: "Daily learning goal", subtitle: "How many minutes per day can you study?" },
+  { id: 1, title: "What's your name?", subtitle: "Pick a username for your profile", icon: "waving_hand" },
+  { id: 2, title: "When is your exam?", subtitle: "We'll count down the days for you", icon: "event" },
+  { id: 3, title: "Daily learning goal", subtitle: "How many minutes per day can you study?", icon: "flag" },
 ];
 
 const GOALS = [
@@ -21,6 +26,8 @@ const GOALS = [
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { isDark } = useTheme();
+  const c = getColors(isDark);
   const setProfile = useAppStore((s) => s.setProfile);
   const [step, setStep] = useState(1);
   const [username, setUsername] = useState("");
@@ -36,7 +43,6 @@ export default function OnboardingPage() {
     if (step === 1) {
       if (!username.trim() || username.length < 3) { setError("Username must be at least 3 characters."); return; }
       if (!/^[a-zA-Z0-9_]+$/.test(username)) { setError("Only letters, numbers and underscores allowed."); return; }
-      // Check uniqueness
       const supabase = createClient();
       const { data } = await supabase.from("profiles").select("id").eq("username", username).single();
       if (data) { setError("Username already taken."); return; }
@@ -44,7 +50,6 @@ export default function OnboardingPage() {
     } else if (step === 2) {
       setStep(3);
     } else {
-      // Save profile
       setLoading(true);
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
@@ -64,7 +69,6 @@ export default function OnboardingPage() {
 
       if (err) { setError(err.message); setLoading(false); return; }
 
-      // Initialize first lesson as available
       const { data: firstLesson } = await supabase
         .from("lessons")
         .select("id")
@@ -93,24 +97,46 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--background)] px-4">
+    <div style={{
+      minHeight: "100vh", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      background: c.background, padding: "16px 24px",
+      fontFamily: font.headline, transition: "background 0.3s",
+    }}>
       {/* Progress bar */}
-      <div className="w-full max-w-sm mb-8">
-        <div className="flex justify-between text-xs text-[var(--muted)] mb-2">
-          <span>Step {step} of {STEPS.length}</span>
-          <span>{Math.round(progress)}%</span>
+      <div style={{ width: "100%", maxWidth: 400, marginBottom: 32 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: c.onSurfaceVariant, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+            Step {step} of {STEPS.length}
+          </span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: c.primary }}>{Math.round(progress)}%</span>
         </div>
-        <div className="h-2 bg-[var(--border)] rounded-full overflow-hidden">
+        <div style={{ height: 6, background: c.surfaceHighest, borderRadius: 9999, overflow: "hidden" }}>
           <motion.div
-            className="h-full bg-primary rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.4, ease: "easeOut" }}
+            style={{ height: "100%", background: c.primary, borderRadius: 9999 }}
           />
+        </div>
+        {/* Step dots */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 16 }}>
+          {STEPS.map((s) => (
+            <div key={s.id} style={{
+              width: step >= s.id ? 24 : 8, height: 8, borderRadius: 9999,
+              background: step >= s.id ? c.primary : c.surfaceHighest,
+              transition: "all 0.3s",
+            }} />
+          ))}
         </div>
       </div>
 
-      <div className="w-full max-w-sm bg-[var(--card-bg)] rounded-2xl shadow-lg border border-[var(--border)] p-6 overflow-hidden">
+      {/* Card */}
+      <div style={{
+        width: "100%", maxWidth: 400, background: c.surfaceLowest,
+        borderRadius: 28, padding: 32, overflow: "hidden",
+        boxShadow: "0px 12px 48px rgba(26,28,27,0.08)",
+      }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
@@ -120,52 +146,78 @@ export default function OnboardingPage() {
             exit="exit"
             transition={{ duration: 0.25 }}
           >
-            <div className="mb-6">
-              <div className="text-3xl mb-3" aria-hidden="true">
-                {step === 1 ? "👋" : step === 2 ? "📅" : "🎯"}
+            {/* Step header */}
+            <div style={{ marginBottom: 28 }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: 16,
+                background: `${c.primary}15`, display: "flex",
+                alignItems: "center", justifyContent: "center", marginBottom: 20,
+              }}>
+                <span className="mso mso-fill" style={{ fontSize: 28, color: c.primary }}>
+                  {STEPS[step - 1].icon}
+                </span>
               </div>
-              <h2 className="text-xl font-bold">{STEPS[step - 1].title}</h2>
-              <p className="text-[var(--muted)] text-sm mt-1">{STEPS[step - 1].subtitle}</p>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: c.onSurface, letterSpacing: "-0.025em", margin: 0 }}>
+                {STEPS[step - 1].title}
+              </h2>
+              <p style={{ color: c.onSurfaceVariant, fontSize: 14, fontWeight: 500, marginTop: 6 }}>
+                {STEPS[step - 1].subtitle}
+              </p>
             </div>
 
             {/* Step 1: Username */}
             {step === 1 && (
-              <div className="space-y-3">
-                <div className="relative">
-                  <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" aria-hidden="true" />
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ position: "relative" }}>
+                  <span className="mso" style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 18, color: c.outline }}>person</span>
                   <input
-                    type="text"
-                    value={username}
+                    type="text" value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="e.g. dutchlearner_2026"
                     autoFocus
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                     onKeyDown={(e) => e.key === "Enter" && handleNext()}
                     aria-label="Choose a username"
+                    style={{
+                      width: "100%", padding: "14px 14px 14px 44px", borderRadius: 14,
+                      border: `1.5px solid ${c.outlineVariant}`, background: c.surfaceLow,
+                      fontSize: 14, fontFamily: font.headline, color: c.onSurface,
+                      outline: "none",
+                    }}
                   />
                 </div>
-                <p className="text-xs text-[var(--muted)]">3–20 characters. Letters, numbers, underscores only.</p>
+                <p style={{ fontSize: 12, color: c.outline, fontWeight: 500 }}>
+                  3–20 characters. Letters, numbers, underscores only.
+                </p>
               </div>
             )}
 
             {/* Step 2: Exam date */}
             {step === 2 && (
-              <div className="space-y-3">
-                <div className="relative">
-                  <Calendar size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]" aria-hidden="true" />
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ position: "relative" }}>
+                  <span className="mso" style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 18, color: c.outline }}>calendar_today</span>
                   <input
-                    type="date"
-                    value={examDate}
+                    type="date" value={examDate}
                     onChange={(e) => setExamDate(e.target.value)}
                     min={new Date().toISOString().split("T")[0]}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)] text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                     aria-label="Set your exam date"
+                    style={{
+                      width: "100%", padding: "14px 14px 14px 44px", borderRadius: 14,
+                      border: `1.5px solid ${c.outlineVariant}`, background: c.surfaceLow,
+                      fontSize: 14, fontFamily: font.headline, color: c.onSurface,
+                      outline: "none",
+                    }}
                   />
                 </div>
                 <button
                   type="button"
                   onClick={() => { setExamDate(""); setStep(3); }}
-                  className="text-sm text-[var(--muted)] hover:text-[var(--foreground)] underline"
+                  style={{
+                    background: "transparent", border: "none", cursor: "pointer",
+                    fontSize: 13, fontWeight: 600, color: c.onSurfaceVariant,
+                    textDecoration: "underline", fontFamily: font.headline,
+                    padding: 0, textAlign: "left",
+                  }}
                 >
                   I don&apos;t have a date yet
                 </button>
@@ -174,62 +226,103 @@ export default function OnboardingPage() {
 
             {/* Step 3: Daily goal */}
             {step === 3 && (
-              <div className="space-y-3">
-                {GOALS.map(({ minutes, label, desc, emoji }) => (
-                  <button
-                    key={minutes}
-                    type="button"
-                    onClick={() => setGoalMinutes(minutes)}
-                    className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all tap-target ${
-                      goalMinutes === minutes
-                        ? "border-primary bg-primary/5 dark:bg-primary/10"
-                        : "border-[var(--border)] hover:border-[var(--muted)]"
-                    }`}
-                    aria-pressed={goalMinutes === minutes}
-                  >
-                    <span className="text-2xl" aria-hidden="true">{emoji}</span>
-                    <div className="text-left">
-                      <p className="font-semibold text-sm">{label}</p>
-                      <p className="text-xs text-[var(--muted)]">{desc}</p>
-                    </div>
-                    {goalMinutes === minutes && (
-                      <div className="ml-auto w-5 h-5 rounded-full bg-primary flex items-center justify-center" aria-hidden="true">
-                        <span className="text-white text-xs">✓</span>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {GOALS.map(({ minutes, label, desc, emoji }) => {
+                  const selected = goalMinutes === minutes;
+                  return (
+                    <button
+                      key={minutes}
+                      type="button"
+                      onClick={() => setGoalMinutes(minutes)}
+                      aria-pressed={selected}
+                      style={{
+                        width: "100%", display: "flex", alignItems: "center", gap: 16,
+                        padding: 18, borderRadius: 16, border: "none", cursor: "pointer",
+                        fontFamily: font.headline, transition: "all 0.2s",
+                        background: selected ? `${c.primary}12` : c.surfaceLow,
+                        boxShadow: selected ? `0 0 0 2px ${c.primary}` : "none",
+                        transform: selected ? "scale(1.02)" : "scale(1)",
+                      }}
+                    >
+                      <span style={{ fontSize: 28 }} aria-hidden="true">{emoji}</span>
+                      <div style={{ textAlign: "left" }}>
+                        <p style={{ fontWeight: 700, fontSize: 14, color: c.onSurface, margin: 0 }}>{label}</p>
+                        <p style={{ fontSize: 12, color: c.onSurfaceVariant, margin: 0, marginTop: 2 }}>{desc}</p>
                       </div>
-                    )}
-                  </button>
-                ))}
+                      {selected && (
+                        <div style={{
+                          marginLeft: "auto", width: 24, height: 24, borderRadius: 9999,
+                          background: c.primary, display: "flex", alignItems: "center", justifyContent: "center",
+                        }}>
+                          <span className="mso" style={{ fontSize: 16, color: "#fff" }}>check</span>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             )}
 
             {error && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
                 role="alert"
-                className="text-danger text-sm bg-danger/10 rounded-lg px-3 py-2 mt-3"
+                style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  padding: "12px 16px", borderRadius: 12, marginTop: 16,
+                  background: `${c.error}15`, color: c.error,
+                  fontSize: 13, fontWeight: 600,
+                }}
               >
+                <span className="mso" style={{ fontSize: 18 }}>error</span>
                 {error}
-              </motion.p>
+              </motion.div>
             )}
           </motion.div>
         </AnimatePresence>
 
-        <button
-          onClick={handleNext}
-          disabled={loading}
-          className="mt-6 w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-xl transition-colors tap-target disabled:opacity-60 flex items-center justify-center gap-2"
-        >
-          {loading ? (
-            <Loader2 size={18} className="animate-spin" aria-hidden="true" />
-          ) : (
-            <>
-              {step === 3 ? "Start learning!" : "Continue"}
-              <ChevronRight size={18} aria-hidden="true" />
-            </>
+        {/* Action buttons */}
+        <div style={{ display: "flex", gap: 12, marginTop: 28 }}>
+          {step > 1 && (
+            <button
+              onClick={() => setStep(step - 1)}
+              style={{
+                width: 52, height: 52, borderRadius: 9999,
+                border: `1.5px solid ${c.outlineVariant}`, background: "transparent",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <span className="mso" style={{ fontSize: 20, color: c.onSurfaceVariant }}>arrow_back</span>
+            </button>
           )}
-        </button>
+          <button
+            onClick={handleNext}
+            disabled={loading}
+            style={{
+              flex: 1, padding: 16, borderRadius: 9999, border: "none",
+              cursor: "pointer", fontSize: 15, fontWeight: 700,
+              fontFamily: font.headline, color: "#fff",
+              background: `linear-gradient(to bottom, ${c.primary}, ${c.primaryContainer})`,
+              boxShadow: `0 10px 20px -5px ${c.primary}40`,
+              opacity: loading ? 0.6 : 1, transition: "all 0.2s",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            }}
+          >
+            {loading ? (
+              <span className="mso" style={{ fontSize: 18, animation: "spin 1s linear infinite" }}>progress_activity</span>
+            ) : (
+              <>
+                {step === 3 ? "Start learning!" : "Continue"}
+                <span className="mso" style={{ fontSize: 18 }}>arrow_forward</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

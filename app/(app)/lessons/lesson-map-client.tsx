@@ -182,7 +182,7 @@ export function LessonMapClient({ lessons }: Props) {
 
                           {/* Node circle */}
                           <div style={{
-                            width: 56, height: 56, borderRadius: 9999,
+                            width: 56, height: 56, borderRadius: 9999, flexShrink: 0,
                             display: "flex", alignItems: "center", justifyContent: "center",
                             position: "relative", zIndex: 20,
                             ...(isCompleted
@@ -195,9 +195,24 @@ export function LessonMapClient({ lessons }: Props) {
                               ? { background: c.surfaceHighest, color: c.onSurfaceVariant }
                               : {}),
                           }}>
-                            {isCompleted && <span className="mso" style={{ fontWeight: 700, fontSize: 24 }}>check</span>}
-                            {isCurrent && <span style={{ fontSize: 20, fontWeight: 900 }}>{lesson.day}</span>}
-                            {isLockedLesson && <span className="mso" style={{ fontSize: 24 }}>lock</span>}
+                            {isCompleted && (
+                              <span className="mso" style={{
+                                fontWeight: 700, fontSize: 24,
+                                display: "block", lineHeight: 1, verticalAlign: "baseline",
+                              }}>check</span>
+                            )}
+                            {isCurrent && (
+                              <span style={{
+                                fontSize: 20, fontWeight: 900,
+                                display: "block", lineHeight: 1,
+                              }}>{lesson.day}</span>
+                            )}
+                            {isLockedLesson && (
+                              <span className="mso" style={{
+                                fontSize: 24,
+                                display: "block", lineHeight: 1, verticalAlign: "baseline",
+                              }}>lock</span>
+                            )}
                           </div>
 
                           {/* Right label */}

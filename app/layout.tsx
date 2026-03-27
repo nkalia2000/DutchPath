@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description:
     "A Duolingo-inspired progressive learning platform for the Dutch Inburgering (civic integration) exam. Starting at A2 level.",
   icons: { icon: "/favicon.ico" },
+  verification: { google: "NyMm56XbiO1tICxdldg03mNF0T4Y-kxGxU8yUT1WwMs" },
 };
 
 export default function RootLayout({

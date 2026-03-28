@@ -48,9 +48,9 @@ const MONTH_NAMES = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT"
 /* ───── Greeting helper ───── */
 function getGreeting(): string {
   const h = new Date().getHours();
-  if (h < 12) return "Goedemorgen";
-  if (h < 18) return "Goedemiddag";
-  return "Goedenavond";
+  if (h < 12) return "Good morning";
+  if (h < 18) return "Good afternoon";
+  return "Good evening";
 }
 
 function lessonTypeLabel(type: string) {
@@ -184,7 +184,7 @@ export function DashboardClient({
               <div style={{ height: "100%", width: `${xpProgress}%`, background: c.secondary, borderRadius: 9999, transition: "width 0.8s ease-out" }} />
             </div>
             {xpProgress >= 100 && (
-              <p style={{ fontSize: 12, fontWeight: 600, color: "#16a34a", marginTop: 6 }}>✓ Daily goal reached! Geweldig!</p>
+              <p style={{ fontSize: 12, fontWeight: 600, color: "#16a34a", marginTop: 6 }}>✓ Daily goal reached! Amazing!</p>
             )}
           </div>
         </section>
@@ -242,7 +242,7 @@ export function DashboardClient({
           }}>
             <p style={{ fontSize: 28, marginBottom: 8 }}>🎉</p>
             <p style={{ fontWeight: 700, color: "#16a34a", fontSize: 16 }}>All lessons completed!</p>
-            <p style={{ fontSize: 14, color: c.onSurfaceVariant, marginTop: 4 }}>Gefeliciteerd! You finished all 30 lessons.</p>
+            <p style={{ fontSize: 14, color: c.onSurfaceVariant, marginTop: 4 }}>Congratulations! You finished all 30 lessons.</p>
           </div>
         )}
 
